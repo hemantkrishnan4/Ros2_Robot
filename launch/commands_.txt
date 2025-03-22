@@ -1,0 +1,29 @@
+
+# This command launches RViz2 with a specific configuration file located at 'src/articubot_one/config/view_bot.rviz'.
+rviz2 -d src/articubot_one/config/view_bot.rviz 
+
+# This command builds the ROS 2 workspace with symbolic links to the source files.
+colcon build --symlink-install
+
+# This command launches the ROS 2 launch file 'rsp.launch.py' from the 'articubot_one' package.
+ros2 launch articubot_one rsp.launch.py 
+ros2 launch articubot_one rsp.launch.py use_sim_time:=true
+
+# This command runs the joint state publisher GUI.
+ros2 run joint_state_publisher_gui joint_state_publisher_gui 
+
+# This command changes the permissions of the 'robot.urdf.xacro' file to be readable, writable, and executable by everyone.
+chmod 777 robot.urdf.xacro
+
+
+ros2 run gazebo_ros spawn_entity.py -topic robot_description -entity bot_name
+
+ros2 launch gazebo_ros gazebo.launch.py
+
+ros2 launch articubot_one launch_sim.launch.py
+
+ros2 launch articubot_one launch_sim.launch.py world:=./src/articubot_one/worlds/obstacles.world 
+
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+
+ros2 topic echo /cmd_vel
